@@ -3,3 +3,7 @@ interface Platform {
 }
 
 expect fun getPlatform(): Platform
+
+expect fun shareText(content: String)
+
+expect fun log(msg: String)
