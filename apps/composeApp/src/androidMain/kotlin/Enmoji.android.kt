@@ -1,18 +1,17 @@
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import java.security.SecureRandom
 import java.security.MessageDigest
+import java.security.SecureRandom
 
-actual fun tokenize(input: String): ByteArray {
-    return input.toByteArray(Charsets.UTF_8).let {
+actual fun tokenize(key: String): ByteArray {
+    return key.encodeToByteArray().let {
         MessageDigest.getInstance("SHA-256").digest(it)
     }
 }
 
-actual fun encryptBytes(token: ByteArray, data: ByteArray): ByteArray {
-    val iv = ByteArray(16)
-    SecureRandom().nextBytes(iv)
+actual fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray {
+    if (iv.isAllZero()) SecureRandom().nextBytes(iv)
     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
     val ivSpec = IvParameterSpec(iv)
     cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(token, "AES"), ivSpec)
@@ -25,17 +24,15 @@ actual fun encryptBytes(token: ByteArray, data: ByteArray): ByteArray {
 }
 
 actual fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray {
-
-    val iv = data.take(16).toByteArray() // The first 12 bytes are the nonce
-    val ciphertext = data.drop(16).toByteArray()
+    val iv = data.copyOfRange(0, Enmoji.IV_LENGTH)
+    val ciphertext = data.copyOfRange(Enmoji.IV_LENGTH, data.size)
     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
     val ivSpec = IvParameterSpec(iv)
     val secretKey = SecretKeySpec(token, "AES")
     cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
-    val data = tryOrEmpty {
+    return tryOrEmpty {
         cipher.doFinal(ciphertext)
     }
-    return data
 }
 
 private inline fun tryOrEmpty(block: () -> ByteArray): ByteArray {

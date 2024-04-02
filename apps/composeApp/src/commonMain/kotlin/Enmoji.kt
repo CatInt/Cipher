@@ -1,5 +1,7 @@
-expect fun tokenize(input: String): ByteArray
-expect fun encryptBytes(token: ByteArray, data: ByteArray): ByteArray
+import kotlin.random.Random
+
+expect fun tokenize(key: String): ByteArray
+expect fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray
 expect fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray
 
 class Enmoji {
@@ -24,6 +26,7 @@ class Enmoji {
             "🤱", "🤲", "🤳", "🤴", "🤵", "🤶", "🤷", "🤸", "🤹", "🤺", "🤼", "🤽", "🤾", "🤿", "🥀", "🥁",
             "🥂", "🥃", "🥄", "🥅", "🥇", "🥈", "🥉", "🥊", "🥋", "🥌", "🥍", "🥎", "🥏", "🥐", "🥑", "🥥"
         )
+        const val IV_LENGTH = 16
 
         // Reverse mapping from emoji to byte value
         private val EMOJI_TO_BYTE = EMOJI_MAP.let {
@@ -42,7 +45,7 @@ class Enmoji {
 
         //😵🚏🤩🚡🚠🚑🚨🤩🚆🟤😘😊😡😩🥊🙌😆🚡🚤😵🚿🚱😶😟🤐🛎🛳🤨😼🛹🛹😂
         private fun enmoji2Bytes(enmoji: String): ByteArray {
-            println("enmoji2Bytes ${enmoji.length} ${EMOJI_TO_BYTE.size}")
+//            println("enmoji2Bytes ${enmoji.length} ${EMOJI_TO_BYTE.size}")
             if (enmoji.isEmpty() || enmoji.length % 2 == 1) return ByteArray(0)
 
             val res = ByteArray(enmoji.length / 2)
@@ -55,10 +58,10 @@ class Enmoji {
             return res
         }
 
-        fun encrypt(digest: Digest): String {
+        fun encrypt(digest: Digest, iv: ByteArray = ByteArray(Enmoji.IV_LENGTH)): String {
             val token = tokenize(digest.key)
             val data = digest.text.encodeToByteArray()
-            val encrypted = encryptBytes(token, data)
+            val encrypted = encryptBytes(token, data, iv)
             return bytes2Enmoji(encrypted)/*.also{ println(it) }*/
         }
 
@@ -70,4 +73,8 @@ class Enmoji {
             return decrypted.decodeToString()/*.also{ println(it) }*/
         }
     }
+}
+
+internal fun ByteArray.isAllZero(): Boolean {
+    return this.all { it == 0.toByte() }
 }
