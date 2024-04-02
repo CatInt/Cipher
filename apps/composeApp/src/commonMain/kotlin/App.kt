@@ -6,7 +6,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -43,7 +42,7 @@ fun App() {
         val scope = CoroutineScope(Dispatchers.IO)
 
         fun encrypt(d: Digest): String {
-            if (d.isDecrypted) {
+            if (d.isDecrypted && d.text.isNotBlank()) {
                 Enmoji.encrypt(d).run {
                     digest = d.copy(enmoji = this)
                 }
