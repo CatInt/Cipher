@@ -16,7 +16,6 @@ jobs:
 
     - name: Setup
       working-directory: ./apps
-      run: cp .env.dev .env
      
     - name: set up JDK 11
       uses: actions/setup-java@v3
