@@ -94,6 +94,15 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.cipher"
             packageVersion = "1.0.0"
+            macOS {
+                iconFile.set(project.file("src/desktopMain/res/launcher.icns"))
+            }
+            windows {
+                iconFile.set(project.file("src/desktopMain/res/launcher.ico"))
+            }
+            linux {
+                iconFile.set(project.file("src/desktopMain/res/launcher.png"))
+            }
         }
     }
 }
