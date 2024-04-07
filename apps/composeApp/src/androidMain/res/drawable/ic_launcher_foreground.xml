@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="128dp"
-    android:height="128dp"
+    android:width="108dp"
+    android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
     <item
-        android:width="24dp"
-        android:height="24dp"
+        android:width="19.4dp"
+        android:height="19.4dp"
         android:gravity="center"
-        android:right="20dp"
-        android:bottom="20dp"
+        android:right="17.2dp"
+        android:bottom="17.4dp"
         android:drawable="@drawable/emj_chats"/>
     <item
-        android:width="24dp"
-        android:height="24dp"
+        android:width="20.8dp"
+        android:height="20.8dp"
         android:gravity="center"
-        android:left="20dp"
-        android:bottom="20dp"
+        android:left="18.8dp"
+        android:bottom="17.8dp"
         android:drawable="@drawable/emj_key"/>
     <item
-        android:width="24dp"
-        android:height="24dp"
+        android:width="21.4dp"
+        android:height="21.4dp"
         android:gravity="center"
-        android:right="20dp"
-        android:top="20dp"
+        android:right="17.2dp"
+        android:top="17.4dp"
         android:drawable="@drawable/emj_locked"/>
     <item
-        android:width="24dp"
-        android:height="24dp"
+        android:width="19.4dp"
+        android:height="19.4dp"
         android:gravity="center"
-        android:left="20dp"
-        android:top="20dp"
+        android:left="17.8dp"
+        android:top="17.8dp"
         android:drawable="@drawable/emj_im"/>
 </layer-list>
