@@ -1,5 +1,3 @@
-import kotlin.random.Random
-
 expect fun tokenize(key: String): ByteArray
 expect fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray
 expect fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray
