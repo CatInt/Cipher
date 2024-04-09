@@ -1,0 +1,42 @@
+name: Releases
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    tags:
+    - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+    defaults:
+     run:
+      working-directory: ./apps
+
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build apk
+      run: ./gradlew assembleRelease
+    - name: Build dmg
+      run: ./gradlew packageDmg
+
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "io.cipher-1.0.0.dmg, io.cipher-1.0-release-unsigned.apk"
