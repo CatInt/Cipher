@@ -3,8 +3,15 @@ name: build
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'apps/**'
+      - '!**.md'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - '.github/workflows/**'
+      - 'apps/**'
+      - '!**.md'
 
 jobs:
   build:
