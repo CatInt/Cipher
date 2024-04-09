@@ -104,5 +104,14 @@ compose.desktop {
                 iconFile.set(project.file("src/desktopMain/res/launcher.png"))
             }
         }
+
+        // the default proguard version on compose plugin is 7.2.2
+        // need 7.4.0+ to comply with some files complied in higher java version
+        // track on https://github.com/JetBrains/compose-multiplatform/issues/3818
+        buildTypes {
+            release {
+                proguard.version.set("7.4.2")
+            }
+        }
     }
 }
