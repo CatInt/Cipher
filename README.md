@@ -7,3 +7,6 @@
 ## Key Objects
 - Encrypt a readable text to emoji(s) which is called enmoji
 - Decrypt enmoji to the readable text
+
+## Preview
+<img src="./preview/cipher-preview-001.png" alt="drawing" height="480"/> <img src="./preview/cipher-preview-003.png" alt="drawing" height="360"/> <img src="./preview/cipher-preview-004.png" alt="drawing" height="360"/>
