@@ -1,2 +1,4 @@
 raws/
 .fleet/
+__pycache__/
+.venv/
