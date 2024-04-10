@@ -1,38 +1,46 @@
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class EnmojiTest {
+
+    @OptIn(ExperimentalStdlibApi::class)
     companion object {
-        private val iv = ByteArray(Enmoji.IV_LENGTH).also { it.fill(1) }
-        private val token = byteArrayOf(-84, -123, -99, 67, -95, -10, -34, 14, -52, 46, 50, -29, 37, 60, -4, -109, -80, 58, -52, 70, -25, -21, -32, -89, -62, 110, 90, -100, 60, 26, -80, -73)
-        private val encryptedBytes = iv + byteArrayOf(-4, -92, -58, -126, -100, 53, 29, -26, -127, 113, 2, -15, -73, -43, 66, 102, -29, 68, -23, -107, -87, 98, 44, 86, -77, 29, -120, -53, 36, 25, 94, 88)
+        private const val IV_HEX = "80808080808080808080808080808080"
+        private const val TOKEN_HEX = "ac859d43a1f6de0ecc2e32e3253cfc93b03acc46e7ebe0a7c26e5a9c3c1ab0b7"
+        private const val ENCRYPTED_HEX = "8080808080808080808080808080808039eb0aed805e713ee345a421c255658e4d08c641b6b789ff231c8d0aacc9c42f"
+        private val iv = IV_HEX.hexToByteArray()
+        private val token = TOKEN_HEX.hexToByteArray()
+        private val encryptedBytes = ENCRYPTED_HEX.hexToByteArray()
         private val digest = Digest(
             text = "1234567890abcdefg",
             key = "thisisatoken",
-            enmoji = "🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚰🚫😣🙅😂😛🟤🛑🚕😁🥃🚱🚠😶🚄🤓🤷🚒🤕🚘😔😨🤳🛶🤧😲🛑😈🙊🛥🛍🤯🤩"
+            enmoji = "🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯😸🤽😉🤿🚯🚍🚠😽🤴🙄🛥😠🤓🚄🚔🚽🙌😈🤗🙀🟥🟧🚸🥥😢😛🚼😉🛶🤚🤕😮"
         )
+
+        private fun ByteArray.toHexString(): String {
+            return this.joinToString("") { it.toHexString() }
+        }
     }
 
     @Test
     fun tokenizeKey() {
-        val actual = tokenize(digest.key)
-        val expected = token
-        assertContentEquals(expected, actual)
+        val actual = tokenize(digest.key).toHexString()
+        val expected = TOKEN_HEX
+        assertEquals(expected, actual)
     }
 
     @Test
     fun encryptTextToBytes() {
-        val actual = encryptBytes(token, digest.text.encodeToByteArray(), iv)
-        val expected = encryptedBytes
-        assertContentEquals(expected, actual)
+        val actual = encryptBytes(token, digest.text.encodeToByteArray(), iv).toHexString()
+        val expected = ENCRYPTED_HEX
+        assertEquals(expected, actual)
     }
 
     @Test
     fun decryptBytes() {
-        val actual = decryptBytes(token, encryptedBytes)
-        val expected = digest.text.encodeToByteArray()
-        assertContentEquals(expected, actual)
+        val actual = decryptBytes(token, encryptedBytes).toHexString()
+        val expected = digest.text.encodeToByteArray().toHexString()
+        assertEquals(expected, actual)
     }
 
     @Test
