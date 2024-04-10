@@ -15,13 +15,13 @@ actual fun tokenize(key: String): ByteArray {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-actual fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray {
+actual fun encryptBytes(token: ByteArray, data: ByteArray, hiv: ByteArray): ByteArray {
     return memScoped {
-        if (iv.isAllZero()) {
-            CCRandomGenerateBytes(iv.refTo(0), iv.size.convert())
+        if (hiv.isAllZero()) {
+            CCRandomGenerateBytes(hiv.refTo(0), hiv.size.convert())
         }
         cryptorScope { cryptorRef ->
-            cryptorRef.create(kCCEncrypt, token, iv.refTo(0))
+            cryptorRef.create(kCCEncrypt, token, (hiv + hiv).refTo(0))
 
             val output = ByteArray(cryptorRef.outputLength(data.size))
             val dataOutMoved = alloc<size_tVar>()
@@ -35,18 +35,18 @@ actual fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteA
                 )
             }
 
-            iv + output
+            hiv + output
         }
     }
 }
 
 @OptIn(ExperimentalForeignApi::class)
 actual fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray {
-    val iv = data.copyOfRange(0, Enmoji.IV_LENGTH)
-    val ciphertext = data.copyOfRange(Enmoji.IV_LENGTH, data.size)
+    val hiv = data.copyOfRange(0, Enmoji.HIV_LENGTH)
+    val ciphertext = data.copyOfRange(Enmoji.HIV_LENGTH, data.size)
     return memScoped {
         cryptorScope { cryptorRef ->
-            cryptorRef.create(kCCDecrypt, token, iv.refTo(0))
+            cryptorRef.create(kCCDecrypt, token, (hiv + hiv).refTo(0))
 
             val output = ByteArray(cryptorRef.outputLength(ciphertext.size))
             val dataOutMoved = alloc<size_tVar>()

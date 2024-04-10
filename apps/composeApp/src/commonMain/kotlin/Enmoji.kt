@@ -1,5 +1,5 @@
 expect fun tokenize(key: String): ByteArray
-expect fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray
+expect fun encryptBytes(token: ByteArray, data: ByteArray, hiv: ByteArray): ByteArray
 expect fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray
 
 class Enmoji {
@@ -25,7 +25,7 @@ class Enmoji {
             "🤱", "🤲", "🤳", "🤴", "🤵", "🤶", "🤷", "🤸", "🤹", "🤺", "🤼", "🤽", "🤾", "🤿", "🥀", "🥁",
             "🥂", "🥃", "🥄", "🥅", "🥇", "🥈", "🥉", "🥊", "🥋", "🥌", "🥍", "🥎", "🥏", "🥐", "🥑", "🥥"
         )
-        const val IV_LENGTH = 16
+        const val HIV_LENGTH = 8
 
         // Reverse mapping from emoji to byte value
         private val EMOJI_TO_BYTE = EMOJI_DICT.let {
@@ -52,7 +52,7 @@ class Enmoji {
             return res
         }
 
-        fun encrypt(digest: Digest, iv: ByteArray = ByteArray(IV_LENGTH)): String {
+        fun encrypt(digest: Digest, iv: ByteArray = ByteArray(HIV_LENGTH)): String {
             val token = tokenize(digest.key)
             val data = digest.text.encodeToByteArray()
             val encrypted = encryptBytes(token, data, iv)
