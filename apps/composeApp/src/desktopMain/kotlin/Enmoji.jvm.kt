@@ -10,10 +10,10 @@ actual fun tokenize(key: String): ByteArray {
     }
 }
 
-actual fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteArray {
-    if (iv.isAllZero()) SecureRandom().nextBytes(iv)
+actual fun encryptBytes(token: ByteArray, data: ByteArray, hiv: ByteArray): ByteArray {
+    if (hiv.isAllZero()) SecureRandom().nextBytes(hiv)
     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-    val ivSpec = IvParameterSpec(iv)
+    val ivSpec = IvParameterSpec(hiv + hiv)
     val spec = SecretKeySpec(token, "AES")
     cipher.init(Cipher.ENCRYPT_MODE, spec, ivSpec)
     //    val paddedData = data.apply { padToBlockSize(cipher.blockSize) }
@@ -21,14 +21,14 @@ actual fun encryptBytes(token: ByteArray, data: ByteArray, iv: ByteArray): ByteA
         cipher.doFinal(data)
     }
     // Combine IV and ciphertext and encode to Base64
-    return iv + ciphertext
+    return hiv + ciphertext
 }
 
 actual fun decryptBytes(token: ByteArray, data: ByteArray): ByteArray {
-    val iv = data.copyOfRange(0, Enmoji.IV_LENGTH)
-    val ciphertext = data.copyOfRange(Enmoji.IV_LENGTH, data.size)
+    val hiv = data.copyOfRange(0, Enmoji.HIV_LENGTH)
+    val ciphertext = data.copyOfRange(Enmoji.HIV_LENGTH, data.size)
     val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-    val ivSpec = IvParameterSpec(iv)
+    val ivSpec = IvParameterSpec(hiv + hiv)
     val spec = SecretKeySpec(token, "AES")
     cipher.init(Cipher.DECRYPT_MODE, spec, ivSpec)
     return tryOrEmpty {

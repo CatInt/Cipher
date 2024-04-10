@@ -5,16 +5,16 @@ class EnmojiTest {
 
     @OptIn(ExperimentalStdlibApi::class)
     companion object {
-        private const val IV_HEX = "80808080808080808080808080808080"
+        private const val HIV_HEX = "8080808080808080"
         private const val TOKEN_HEX = "ac859d43a1f6de0ecc2e32e3253cfc93b03acc46e7ebe0a7c26e5a9c3c1ab0b7"
-        private const val ENCRYPTED_HEX = "8080808080808080808080808080808039eb0aed805e713ee345a421c255658e4d08c641b6b789ff231c8d0aacc9c42f"
-        private val iv = IV_HEX.hexToByteArray()
+        private const val ENCRYPTED_HEX = "808080808080808039eb0aed805e713ee345a421c255658e4d08c641b6b789ff231c8d0aacc9c42f"
+        private val hiv = HIV_HEX.hexToByteArray()
         private val token = TOKEN_HEX.hexToByteArray()
-        private val encryptedBytes = ENCRYPTED_HEX.hexToByteArray()
+        private val encrypted = ENCRYPTED_HEX.hexToByteArray()
         private val digest = Digest(
             text = "1234567890abcdefg",
             key = "thisisatoken",
-            enmoji = "🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯🚯😸🤽😉🤿🚯🚍🚠😽🤴🙄🛥😠🤓🚄🚔🚽🙌😈🤗🙀🟥🟧🚸🥥😢😛🚼😉🛶🤚🤕😮"
+            enmoji = "🚯🚯🚯🚯🚯🚯🚯🚯😸🤽😉🤿🚯🚍🚠😽🤴🙄🛥😠🤓🚄🚔🚽🙌😈🤗🙀🟥🟧🚸🥥😢😛🚼😉🛶🤚🤕😮"
         )
 
         private fun ByteArray.toHexString(): String {
@@ -31,21 +31,21 @@ class EnmojiTest {
 
     @Test
     fun encryptTextToBytes() {
-        val actual = encryptBytes(token, digest.text.encodeToByteArray(), iv).toHexString()
+        val actual = encryptBytes(token, digest.text.encodeToByteArray(), hiv).toHexString()
         val expected = ENCRYPTED_HEX
         assertEquals(expected, actual)
     }
 
     @Test
     fun decryptBytes() {
-        val actual = decryptBytes(token, encryptedBytes).toHexString()
+        val actual = decryptBytes(token, encrypted).toHexString()
         val expected = digest.text.encodeToByteArray().toHexString()
         assertEquals(expected, actual)
     }
 
     @Test
     fun encryptTextToEnmoji() {
-        val actual = Enmoji.encrypt(digest, iv)
+        val actual = Enmoji.encrypt(digest, hiv)
         val expected = digest.enmoji
         assertEquals(expected, actual)
     }
